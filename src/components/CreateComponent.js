@@ -85,7 +85,6 @@ class CreateComponent extends Component {
     const startTime = parseInt(this.startTime.current.value);
     const endTime = parseInt(this.endTime.current.value);
     let lyrics = this.state.lyricsBox.slice();
-    console.log(lyrics);
     for (let i = lyrics.length - 1; i >= 0 ; i--) {
       if (lyrics[i] === '' || lyrics[i] === ' ') {
         lyrics.pop();

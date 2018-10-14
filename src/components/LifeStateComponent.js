@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 class LifeStateComponent extends Component {
 
   render() {
+    console.log(this.props);
     let lifeArr = [];
     for (var i = 0; i < this.props.life; i++) {
       lifeArr.push("");

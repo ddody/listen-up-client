@@ -17,12 +17,13 @@ const listenStateToProps = (state) => {
     problems: state.problems,
     router: state.router,
     userLevel: state.userLevel,
-    userLife: state.userLife
+    userLife: state.userLife,
+    userPoint: state.userPoint,
+    nowProblems: state.nowProblems
   };
 };
 
 const listenDispatchProps = (dispatch, ownProps) => {
-  console.log(ownProps);
   return {
     onAuthStateChanged() {
       firebase
@@ -55,7 +56,7 @@ const listenDispatchProps = (dispatch, ownProps) => {
         .auth()
         .signInWithPopup(provider)
         .then((result) => {
-          this.onLoginAndImportToken(result.user.uid);
+          this.props.onLoginAndImportToken(result.user.uid);
         })
         .catch((err) => {
           alert('Login failed');
@@ -83,6 +84,9 @@ const listenDispatchProps = (dispatch, ownProps) => {
           'authorization': "Bearer " + data.token
         }
       })
+        .then(() => {
+          alert('Submit success');
+        })
         .catch((err) => {
           alert('Problem creation failed');
           console.log(err);
@@ -97,28 +101,47 @@ const listenDispatchProps = (dispatch, ownProps) => {
         }
       })
         .then((reponse) => {
-          console.log(ownProps);
-          dispatch({ type: 'USER_STATE_INIT'});
-          dispatch({ type: 'GET_PROBLEMS', problems: reponse.data.result});
+          dispatch({ type: 'USER_STATE_INIT' });
+          dispatch({ type: 'GET_PROBLEMS', problems: reponse.data.result });
         })
         .then(() => {
-          ownProps.history.push('/problem');
+          ownProps.history.push('/problem/round1');
         })
         .catch((err) => {
-          // dispatch error
+          // add dispatch error
           alert('Problem get failed');
           console.log(err);
         });
     },
-    sendProblem() {
-
+    sendProblem(data) {
+      axios({
+        url: BASE_URL + data.uid + `/points`,
+        method: 'post',
+        data: data,
+        headers: {
+          'authorization': "Bearer " + data.token
+        }
+      })
+        .then(() => {
+          alert('Point add success');
+        })
+        .catch((err) => {
+          alert('Problem creation failed');
+          console.log(err);
+        });
     },
     userLevelUp() {
-      dispatch({ type: 'USER_LEVEL_UP'});
+      dispatch({ type: 'USER_LEVEL_UP' });
     },
     userLifeState(life) {
-      dispatch({ type: 'USER_LIFE_STATE', life});
-    }
+      dispatch({ type: 'USER_LIFE_STATE', life });
+    },
+    userPointState(point) {
+      dispatch({ type: 'USER_POINT_STATE', point });
+    },
+    // nowProblem() {
+    //   dispatch({ type: 'NOW_PROBLEM' });
+    // }
   }
 }
 

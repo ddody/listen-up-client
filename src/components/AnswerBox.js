@@ -13,6 +13,8 @@ class AnswerBox extends Component {
 
   componentDidMount() {
     for (let x in this.refs) {
+      this.refs[x].value = '';
+      console.log(this.refs[x]);
       this.refs[x].onkeydown = (e) =>
         this._handleKeyPress(e, this.refs[x]);
     }
@@ -28,9 +30,9 @@ class AnswerBox extends Component {
       if (next && next.tagName === "INPUT") {
         next.focus();
       }
-      if (!next) {
-        console.log('제출');
-      }
+      // if (!next) {
+      //   console.log('제출');
+      // }
     } else if (e.keyCode === 8) {
       e.preventDefault();
       let prev = this.refs[field.name].previousSibling;
@@ -52,6 +54,13 @@ class AnswerBox extends Component {
   }
 
   render() {
+    // for (let x in this.refs) {
+    //   this.refs[x].value = '';
+    //   console.log(this.refs[x]);
+    //   this.refs[x].onkeydown = (e) =>
+    //     this._handleKeyPress(e, this.refs[x]);
+    // }
+    console.log(this.props);
     return (
       <div>
         {

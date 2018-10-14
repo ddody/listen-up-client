@@ -10,17 +10,11 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.createProblemSubmit = this.createProblemSubmit.bind(this);
-    this.userLifeState = this.userLifeState.bind(this);
   }
 
   componentDidMount() {
     this.props.onAuthStateChanged();
-  }
-
-  userLifeState(life) {
-    this.props.userLifeState(life);
   }
 
   createProblemSubmit(data) {
@@ -42,7 +36,7 @@ class App extends Component {
               <LoginComponent
                 onChallengeClick={this.props.getProblems}
                 isLogin={this.props.isLogin}
-                onLoginClick={this.props.authenticateWithGoogle}
+                onLoginClick={this.props.authenticateWithGoogle.bind(this)}
               />
               <div className="background">
                 <ReactPlayer
@@ -68,7 +62,9 @@ class App extends Component {
                 <ChallengeComponent
                   {...props}
                   getProblems={this.getProblems}
-                  userLifeState={this.userLifeState}
+                  userLifeState={this.props.userLifeState}
+                  userPointSrate={this.props.userPointSrate}
+                  userLevelUp={this.props.userLevelUp}
                   problems={this.props.problems}
                   level={this.props.userLevel}
                   life={this.props.userLife}

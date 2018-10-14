@@ -5,6 +5,8 @@ const initialState = {
   problems: [],
   userLevel: 0,
   userLife: 5,
+  userPoint: 0,
+  nowProblems: null
 };
 
 export default function reducer(state = initialState, action) {
@@ -23,7 +25,6 @@ export default function reducer(state = initialState, action) {
       });
     case 'GET_PROBLEMS':
       const problemsCopy = action.problems.slice();
-      console.log(problemsCopy);
       return Object.assign({}, state, {
         problems: problemsCopy
       });
@@ -40,6 +41,10 @@ export default function reducer(state = initialState, action) {
         userLife: 5,
         userLevel: 0
       });
+    // case 'NOW_PROBLEM':
+    //   return Object.assign({}, state, {
+
+    //   });
     default:
       return Object.assign({}, state);
   }
