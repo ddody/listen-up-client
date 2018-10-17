@@ -23,7 +23,8 @@ class CreateComponent extends Component {
   }
 
   onYoutubeUrlValidation(url) {
-    const validation = url.match(/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/);
+    const regex = /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/;
+    const validation = regex.test(url);
     if (validation) {
       return true;
     } else {
@@ -133,27 +134,13 @@ class CreateComponent extends Component {
 
         <div className="create-player">
           <ReactPlayer
-            url={this.state.url}
+            url={`${this.state.url}?start=${this.state.startTime}&end=${this.state.endTime}`}
             ref={player => { this.player = player }}
             playing={this.state.playing}
             width="100%"
             height="100%"
-            // controls
-            youtubeConfig={
-              {
-                playerVars: {
-                  start: this.state.startTime,
-                  end: this.state.endTime,
-                  rel: 0,
-                  fs: 1,
-                  modestbranding: 1,
-                  iv_load_policy: 3
-                }
-              }
-            }
-            onEnded={() => {
-              this.player.seekTo(this.state.startTime);
-            }}
+            controls={true}
+            youtubeConfig={{playerVars: {rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3, showinfo: 0}}}
           />
         </div>
         <h2>가사 등록</h2>

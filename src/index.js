@@ -8,6 +8,10 @@ import { createBrowserHistory } from 'history'
 import reducer from './reducers';
 import logger from 'redux-logger'
 import App from './containers/App';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faHeart } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faHeart);
 
 const history = createBrowserHistory();
 

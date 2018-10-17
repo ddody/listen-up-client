@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import AppComponent from '../components/AppComponent';
 import firebase from '../services/firebase';
@@ -8,18 +7,24 @@ const BASE_URL = `http://localhost:5000`;
 const POST_LOGIN = BASE_URL + `/users/login`;
 const POST_CREATE_PROBLEM = BASE_URL + `/problems`;
 const GET_PROBLEMS = BASE_URL + `/problems/random`; //query string ?limit=3
+const INIT_POINT = 100;
 
 const listenStateToProps = (state) => {
   return {
+    router: state.router,
     isLogin: state.isLogin,
     userToken: state.userToken,
     uid: state.uid,
     problems: state.problems,
-    router: state.router,
+    problem: state.problem,
     userLevel: state.userLevel,
     userLife: state.userLife,
     userPoint: state.userPoint,
-    nowProblems: state.nowProblems
+    isSolved: state.isSolved,
+    isClear: state.isClear,
+    isHint: state.isHint,
+    wrongAnswer: state.wrongAnswer,
+    wrongSelectNumber: state.wrongSelectNumber
   };
 };
 
@@ -30,19 +35,23 @@ const listenDispatchProps = (dispatch, ownProps) => {
         .auth()
         .onAuthStateChanged((user) => {
           if (user) {
-            this.onLoginAndImportToken(user.uid);
+            this.onLoginAndImportToken({
+              uid: user.uid,
+              name: user.displayName
+            });
           } else {
             dispatch({ type: 'ON_USER_LOGOUT' });
           }
         });
     },
-    onLoginAndImportToken(uid) {
+    onLoginAndImportToken(data) {
       axios
         .post(POST_LOGIN, {
-          uid: uid
+          uid: data.uid,
+          name: data.name
         })
         .then((response) => {
-          dispatch({ type: 'ON_USER_LOGIN', userToken: response.data.token, uid: uid });
+          dispatch({ type: 'ON_USER_LOGIN', userToken: response.data.token, uid: data.uid });
         })
         .catch((err) => {
           alert('Login and import token failed')
@@ -56,7 +65,10 @@ const listenDispatchProps = (dispatch, ownProps) => {
         .auth()
         .signInWithPopup(provider)
         .then((result) => {
-          this.props.onLoginAndImportToken(result.user.uid);
+          this.props.onLoginAndImportToken({
+            uid: result.user.uid,
+            name: result.user.displayName
+          });
         })
         .catch((err) => {
           alert('Login failed');
@@ -97,41 +109,47 @@ const listenDispatchProps = (dispatch, ownProps) => {
         url: GET_PROBLEMS,
         method: 'get',
         headers: {
-          'authorization': "Bearer " + token
+          'authorization': 'Bearer ' + token
         }
       })
         .then((reponse) => {
           dispatch({ type: 'USER_STATE_INIT' });
           dispatch({ type: 'GET_PROBLEMS', problems: reponse.data.result });
+          dispatch({ type: 'NOW_PROBLEM' });
         })
         .then(() => {
-          ownProps.history.push('/problem/round1');
+          ownProps.history.push('/problem');
         })
         .catch((err) => {
           // add dispatch error
-          alert('Problem get failed');
+          alert('Get problem failed');
           console.log(err);
         });
     },
-    sendProblem(data) {
+    sendProblemPoint(data) {
       axios({
-        url: BASE_URL + data.uid + `/points`,
+        url: BASE_URL + `/users/` + data.uid + `/points`,
         method: 'post',
-        data: data,
+        data: {
+          uid: data.uid,
+          point: data.life * INIT_POINT
+        },
         headers: {
           'authorization': "Bearer " + data.token
         }
       })
-        .then(() => {
+        .then((result) => {
           alert('Point add success');
+          ownProps.history.push('/');
         })
         .catch((err) => {
-          alert('Problem creation failed');
+          alert('Point add failed');
           console.log(err);
         });
     },
     userLevelUp() {
       dispatch({ type: 'USER_LEVEL_UP' });
+      dispatch({ type: 'NOW_PROBLEM' });
     },
     userLifeState(life) {
       dispatch({ type: 'USER_LIFE_STATE', life });
@@ -139,9 +157,52 @@ const listenDispatchProps = (dispatch, ownProps) => {
     userPointState(point) {
       dispatch({ type: 'USER_POINT_STATE', point });
     },
-    // nowProblem() {
-    //   dispatch({ type: 'NOW_PROBLEM' });
-    // }
+    userAnswerCheck(answer) {
+      dispatch({ type: 'USER_ANSWER_CHECK', answer });
+    },
+    userPloblemSolved(state) {
+      dispatch({ type: 'USER_PROBLEM_SOLVED', state });
+    },
+    userLevelClear(clear) {
+      dispatch({ type: 'USER_LEVEL_CLEAR', clear });
+    },
+    userHintState(hint) {
+      dispatch({ type: 'USER_HINT_STATE', hint });
+    },
+    problemInitialize() {
+      dispatch({ type: 'USER_STATE_INIT' });
+    },
+    saveWrongAnswer(wrong) {
+      dispatch({ type: 'SAVE_WRONG_ANSWER', wrong });
+    },
+    selectAnswerNumber(number) {
+      dispatch({ type: 'SELECT_ANSWER_NUMBER', number });
+    },
+    sendSelectAnswer(data) {
+      if (data.wrongArr) {
+        axios({
+          url: BASE_URL + `/answers`,
+          method: 'post',
+          data: {
+            uid: data.uid,
+            ...data.wrongArr
+          },
+          headers: {
+            'authorization': "Bearer " + data.token
+          }
+        })
+          .then((result) => {
+            alert('Answer add success');
+            ownProps.history.push('/');
+          })
+          .catch((err) => {
+            alert('Answer add failed');
+            console.log(err);
+          });
+      } else {
+        ownProps.history.push('/');
+      }
+    }
   }
 }
 

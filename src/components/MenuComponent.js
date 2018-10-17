@@ -10,6 +10,7 @@ class MenuComponent extends Component {
           {/* <li><Link to="/problem">Challenge</Link></li> */}
           <li><Link to="/create">Create</Link></li>
           <li><Link to="/ranking">Ranking</Link></li>
+          <li><Link to="/wrong-answer">Wrong Answer</Link></li>
         </ul>
       </div>
     )

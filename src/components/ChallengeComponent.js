@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Route } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import AnswerBox from './AnswerBox';
@@ -7,147 +7,153 @@ import LifeStateComponent from './LifeStateComponent';
 class ChallengeComponent extends Component {
   constructor(props) {
     super(props);
-    // this.props.problems[this.props.level] = this.props.problems[this.props.level];
-    console.log(this.props);
     this.state = {
-      character: this.props.problems[this.props.level].lyrics.split(''),
-      userAnswer: this.props.problems[this.props.level].lyrics.split('').map(box => " "),
-      wrong: [], // redux
-      // point: 0, // redux
-      // life: this.props.life, // redux
-      isHint: false,
-      isDone: false,
-      isSuccess: false,
-      isFailed: false,
-      isLevel: this.props.level
+      playing: true
     };
+
+    window.onpopstate = (e) => {
+      this.props.problemInitialize();
+    }
   }
 
   onAnswerSubmit() {
-    if (this.state.userAnswer.join("") === this.props.problems[this.props.level].lyrics) {
-      this.setState({
-        isSuccess: true
-      });
-
+    this.props.saveWrongAnswer();
+    if (this.props.problem.userAnswer.join("") === this.props.problem.lyrics) {
+      this.props.userPloblemSolved(true);
     } else {
-      let wrongCopy = this.state.wrong.slice();
-      wrongCopy.push(this.state.userAnswer.join(""));
       this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
-      this.setState({
-        wrong: wrongCopy,
-      }, function () {
-        if (this.props.life === 0) {
-          this.setState({
-            isFailed: true
-          });
-        }
-      });
+      if (this.props.life === 0) {
+        this.props.userPloblemSolved(false);
+      }
     }
   }
 
   onHintClick() {
     if (this.props.life !== 0) {
-      this.setState({
-        isHint: true
-      });
+      this.props.userHintState(true);
     }
   }
 
-  //test
+  onProblemLoadInit() {
+    this.props.userLevelClear(false);
+  }
+
+  onGoHomeClick() {
+    this.props.sendSelectAnswer();
+    this.props.userPloblemSolved(null);
+  }
 
   onHintOpenOrCancel(ev) {
-    if (this.state.isHint) {
-      const userAnswerCopy = this.state.userAnswer.slice();
+    if (this.props.isHint) {
       if (ev.target.classList.contains('character-box') && this.props.life > 0) {
+        const nowProblem = this.props.problem
+        const userAnswerCopy = nowProblem.userAnswer.slice();
         const target = ev.target.name.split('character')[1];
-        userAnswerCopy[target] = this.state.character[target];
-        ev.target.value = this.state.character[target];
+        userAnswerCopy[target] = nowProblem.lyrics.split("")[target];
+        ev.target.value = nowProblem.lyrics.split("")[target];
+        this.props.userAnswerCheck(userAnswerCopy);
         this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
-        this.setState({
-          userAnswer: userAnswerCopy
-        });
       }
+      this.props.userHintState(false);
+    }
+  }
+
+  onMoreListenClick() {
+    if (this.props.life > 0) {
       this.setState({
-        isHint: false
+        playing: true,
+      }, () => {
+        this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
+        this.player.seekTo(this.props.problem.startTime);
       });
     }
   }
 
   render() {
-    console.log(this.state);
     return (
       <div className="challenge-wrap" onClick={this.onHintOpenOrCancel.bind(this)}>
-        <h2>{this.props.problems[this.props.level].title}</h2>
+        <h2>{this.props.problem.title}</h2>
         <div className="create-player">
           <ReactPlayer
-            url={this.props.problems[this.props.level].link}
+            url={`${this.props.problem.link}?start=${this.props.problem.startTime}&end=${this.props.problem.endTime}`}
             ref={player => { this.player = player }}
-            playing
+            playing={this.state.playing}
             width="100%"
             height="100%"
-            // controls
-            youtubeConfig={
-              {
-                playerVars: {
-                  start: this.props.problems[this.props.level].startTime,
-                  end: this.props.problems[this.props.level].endTime,
-                  rel: 0,
-                  fs: 1,
-                  modestbranding: 1,
-                  iv_load_policy: 3
-                }
-              }
-            }
-            onEnded={() => {
-              this.player.seekTo(this.props.problems[this.props.level].startTime);
-            }}
+            youtubeConfig={{ playerVars: { rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3, showinfo: 0 } }}
           />
         </div>
         <div className="status-bar">
-          <LifeStateComponent life={this.props.life} />
-          <button onClick={this.onHintClick.bind(this)} className={this.state.isHint ? 'now-hint' : ''}>Hint</button>
-        </div>
-        <p>{this.props.problems[this.props.level].lyrics}</p>
-        <div className="create-lyrics">
-          <div className={this.state.isHint ? 'create-lyrics-wrap create-lyrics-wrap-hint' : 'create-lyrics-wrap'} >
-            <AnswerBox character={this.state.character} userAnswer={this.state.userAnswer} />
+          <div className="life-wrap">
+            <LifeStateComponent life={this.props.life} />
+          </div>
+          <div className="status-button-wrap">
+            <button onClick={this.onHintClick.bind(this)} className={this.props.isHint ? 'now-hint' : ''}>Hint</button>
+            <button onClick={this.onMoreListenClick.bind(this)}>One More Listen</button>
           </div>
         </div>
-        <button onClick={this.onAnswerSubmit.bind(this)}>제출</button>
+        <div className="create-lyrics">
+          <div className={this.props.isHint ? 'create-lyrics-wrap create-lyrics-wrap-hint' : 'create-lyrics-wrap'} >
+            <AnswerBox
+              character={this.props.problem.lyrics}
+              userAnswer={this.props.problem.userAnswer}
+              userAnswerCheck={this.props.userAnswerCheck}
+              isClear={this.props.isClear}
+              onProblemLoadInit={this.onProblemLoadInit.bind(this)}
+            />
+          </div>
+        </div>
+        <button className="answer-submit" onClick={this.onAnswerSubmit.bind(this)}>제출</button>
         <Route path="/problem" render={() => {
-          if (this.state.isSuccess) {
-            return (
-            <div className="popup">
-              <h3 className="popup-title">Go Next Level</h3>
-              <span className="popup-point">Point!!</span>
-              <button className="popup-button" onClick={() => {
-                this.props.userLevelUp();
-                console.log(this.props.level);
-                this.setState({
-                  isSuccess: false,
-                  character: this.props.problems[1].lyrics.split(''),
-                  userAnswer: this.props.problems[1].lyrics.split('').map(box => " "),
-                });
-              }}>Go Next Level</button>
-            </div>)
-          } else if (this.state.isFailed) {
-            return (
-            <div className="popup">
-              <strong className="popup-title">OMG_you failed...</strong>
-              <span className="popup-point">Point!!</span>
-              <button>Go Home</button>
-            </div>)
-          } else if (this.state.isDone) {
+          if (this.props.isSolved === true) {
+            if (this.props.problemsCount === this.props.level) {
+              return (
+                <div className="popup">
+                  <strong className="popup-title">Congratulation</strong>
+                  <span className="popup-point">Point!!</span>
+                  <button onClick={() => {
+                    this.onGoHomeClick.bind(this);
+                    this.props.userPloblemSolved(null);
+                    this.props.sendProblemPoint();
+                  }}>Go Home</button>
+                </div>);
+            } else {
+              return (
+                <div className="popup">
+                  <h3 className="popup-title">Go Next Level</h3>
+                  <span className="popup-point">Point!!</span>
+                  <button className="popup-button" onClick={() => {
+                    this.props.userPloblemSolved(null);
+                    this.props.userLevelUp();
+                    this.props.userLevelClear(true);
+                    this.setState({
+                      playing: true
+                    });
+                  }}>Go Next Level</button>
+                </div>);
+            }
+          } else if (this.props.isSolved === false) {
             return (
               <div className="popup">
-                <strong className="popup-title">Congratulation</strong>
-                <span className="popup-point">Point!!</span>
-                <button>Go Home</button>
-              </div>)
+                <strong className="popup-title">OMG_you failed...</strong>
+                <ul className="wrong-answer-list">
+                  {
+                    this.props.wrongAnswers.map((item, index) => {
+                      return (
+                        <li key={index}>
+                          <input type="radio" data-index={`${index}`} id={`wrong${index}`} name="wrong" onChange={() => { this.props.selectAnswerNumber(index) }} />
+                          <label htmlFor={`wrong${index}`}>{item.answer}</label>
+                        </li>
+                      );
+                    })
+                  }
+                </ul>
+                <button onClick={this.onGoHomeClick.bind(this)}>Go Home</button>
+              </div>);
           } else {
-            return <div></div>
+            return null;
           }
-        }}/>
+        }} />
       </div>
     )
   }

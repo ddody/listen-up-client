@@ -1,20 +1,33 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 class AnswerBox extends Component {
   constructor(props) {
     super(props);
-
     this._handleKeyPress = this._handleKeyPress.bind(this);
   }
 
   inputChange(ev) {
-    this.props.userAnswer[ev.target.name.split('character')[1]] = ev.target.value === '' ? ' ' : ev.target.value;
+    let inputAnswerCopy = this.props.userAnswer.slice();
+    inputAnswerCopy[ev.target.name.split('character')[1]] = ev.target.value === '' ? ' ' : ev.target.value;
+    this.props.userAnswerCheck(inputAnswerCopy);
   }
 
   componentDidMount() {
+    this.addInputsHandler();
+    this.refs['character0'].focus();
+  }
+
+  componentDidUpdate() {
+    if (this.props.isClear) {
+      this.addInputsHandler();
+      this.props.onProblemLoadInit();
+      this.refs['character0'].focus();
+    }
+  }
+
+  addInputsHandler() {
     for (let x in this.refs) {
       this.refs[x].value = '';
-      console.log(this.refs[x]);
       this.refs[x].onkeydown = (e) =>
         this._handleKeyPress(e, this.refs[x]);
     }
@@ -41,7 +54,9 @@ class AnswerBox extends Component {
       }
       if (prev && prev.tagName === "INPUT") {
         if (this.refs[field.name].value.length > 0) {
-          this.props.userAnswer[field.name.split('character')[1]] = '';
+          let inputAnswerCopy = this.props.userAnswer.slice();
+          inputAnswerCopy[field.name.split('character')[1]] = '';
+          this.props.userAnswerCheck(inputAnswerCopy);
           this.refs[field.name].value = '';
         } else {
           prev.focus();
@@ -54,17 +69,10 @@ class AnswerBox extends Component {
   }
 
   render() {
-    // for (let x in this.refs) {
-    //   this.refs[x].value = '';
-    //   console.log(this.refs[x]);
-    //   this.refs[x].onkeydown = (e) =>
-    //     this._handleKeyPress(e, this.refs[x]);
-    // }
-    console.log(this.props);
     return (
-      <div>
+      <Fragment>
         {
-          this.props.character.map(
+          this.props.character.split('').map(
             (box, index) => {
               if (box === ' ') {
                 return (
@@ -93,7 +101,7 @@ class AnswerBox extends Component {
             }
           )
         }
-      </div>
+      </Fragment>
     );
   }
 }
