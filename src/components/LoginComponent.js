@@ -3,7 +3,7 @@ import MenuComponent from './MenuComponent';
 
 class Login extends Component {
   render() {
-    if (this.props.isLogin) {
+    if (this.props.token) {
       return <MenuComponent onChallengeClick={this.props.onChallengeClick} />
     } else {
       return (

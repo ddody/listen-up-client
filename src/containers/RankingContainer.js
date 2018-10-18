@@ -1,8 +1,16 @@
 import { connect } from 'react-redux';
 import axios from 'axios';
 import RankingComponent from '../components/RankingComponent';
+import { GET_USER_RANKING } from '../constants/ActionTypes'
 
 const BASE_URL = `http://localhost:5000`;
+
+// const rankingStateToProps = (state) => {
+//   return {
+//     router: state.router,
+//     ranking: state.ranking
+//   };
+// };
 
 const rankingStateToProps = (state) => {
   return {
@@ -22,7 +30,7 @@ const rankingDispatchProps = (dispatch, ownProps) => {
         }
       })
         .then((response) => {
-          dispatch({ type: 'GET_USER_RANKING', ranking: response.data.result});
+          dispatch({ type: GET_USER_RANKING, ranking: response.data.result});
         })
         .catch((err) => {
           alert('Get ranking failed');

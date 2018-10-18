@@ -2,29 +2,25 @@ import { connect } from 'react-redux';
 import AppComponent from '../components/AppComponent';
 import firebase from '../services/firebase';
 import axios from 'axios';
+import {
+  ON_USER_LOGIN,
+  ON_USER_LOGOUT,
+  GET_GAME_PROBLEMS,
+  USER_STATE_INIT,
+  SELECT_CURRENT_PROBLEM
+} from '../constants/ActionTypes'
 
 const BASE_URL = `http://localhost:5000`;
-const POST_LOGIN = BASE_URL + `/users/login`;
-const POST_CREATE_PROBLEM = BASE_URL + `/problems`;
-const GET_PROBLEMS = BASE_URL + `/problems/random`; //query string ?limit=3
-const INIT_POINT = 100;
+// const BASE_URL = `http://192.168.0.132:5000`;
 
 const listenStateToProps = (state) => {
+  console.dir(state);
   return {
     router: state.router,
-    isLogin: state.isLogin,
-    userToken: state.userToken,
-    uid: state.uid,
-    problems: state.problems,
-    problem: state.problem,
-    userLevel: state.userLevel,
-    userLife: state.userLife,
-    userPoint: state.userPoint,
-    isSolved: state.isSolved,
-    isClear: state.isClear,
-    isHint: state.isHint,
-    wrongAnswer: state.wrongAnswer,
-    wrongSelectNumber: state.wrongSelectNumber
+    user: {
+      token: state.user.token,
+      uid: state.uid,
+    },
   };
 };
 
@@ -40,18 +36,22 @@ const listenDispatchProps = (dispatch, ownProps) => {
               name: user.displayName
             });
           } else {
-            dispatch({ type: 'ON_USER_LOGOUT' });
+            dispatch({ type: ON_USER_LOGOUT });
           }
         });
     },
     onLoginAndImportToken(data) {
       axios
-        .post(POST_LOGIN, {
+        .post(BASE_URL + `/users/login`, {
           uid: data.uid,
           name: data.name
         })
         .then((response) => {
-          dispatch({ type: 'ON_USER_LOGIN', userToken: response.data.token, uid: data.uid });
+          dispatch({
+            type: ON_USER_LOGIN,
+            token: response.data.token,
+            uid: data.uid
+          });
         })
         .catch((err) => {
           alert('Login and import token failed')
@@ -65,6 +65,7 @@ const listenDispatchProps = (dispatch, ownProps) => {
         .auth()
         .signInWithPopup(provider)
         .then((result) => {
+          console.log(result);
           this.props.onLoginAndImportToken({
             uid: result.user.uid,
             name: result.user.displayName
@@ -80,42 +81,28 @@ const listenDispatchProps = (dispatch, ownProps) => {
         .auth()
         .signOut()
         .then(() => {
-          dispatch({ type: 'ON_USER_LOGOUT' });
+          dispatch({ type: ON_USER_LOGOUT });
         })
         .catch((err) => {
           alert('Logout failed');
           console.log(err);
         });
     },
-    createProblemSubmit(data) {
-      axios({
-        url: POST_CREATE_PROBLEM,
-        method: 'post',
-        data: data,
-        headers: {
-          'authorization': "Bearer " + data.token
-        }
-      })
-        .then(() => {
-          alert('Submit success');
-        })
-        .catch((err) => {
-          alert('Problem creation failed');
-          console.log(err);
-        });
-    },
-    getProblems(token) {
+    getGameProblems(token) {
       return axios({
-        url: GET_PROBLEMS,
+        url: BASE_URL + `/problems/random`,
         method: 'get',
         headers: {
           'authorization': 'Bearer ' + token
         }
       })
         .then((reponse) => {
-          dispatch({ type: 'USER_STATE_INIT' });
-          dispatch({ type: 'GET_PROBLEMS', problems: reponse.data.result });
-          dispatch({ type: 'NOW_PROBLEM' });
+          dispatch({ type: USER_STATE_INIT });
+          dispatch({
+            type: GET_GAME_PROBLEMS,
+            problems: reponse.data.result
+          });
+          dispatch({ type: SELECT_CURRENT_PROBLEM });
         })
         .then(() => {
           ownProps.history.push('/problem');
@@ -126,82 +113,8 @@ const listenDispatchProps = (dispatch, ownProps) => {
           console.log(err);
         });
     },
-    sendProblemPoint(data) {
-      axios({
-        url: BASE_URL + `/users/` + data.uid + `/points`,
-        method: 'post',
-        data: {
-          uid: data.uid,
-          point: data.life * INIT_POINT
-        },
-        headers: {
-          'authorization': "Bearer " + data.token
-        }
-      })
-        .then((result) => {
-          alert('Point add success');
-          ownProps.history.push('/');
-        })
-        .catch((err) => {
-          alert('Point add failed');
-          console.log(err);
-        });
-    },
-    userLevelUp() {
-      dispatch({ type: 'USER_LEVEL_UP' });
-      dispatch({ type: 'NOW_PROBLEM' });
-    },
-    userLifeState(life) {
-      dispatch({ type: 'USER_LIFE_STATE', life });
-    },
-    userPointState(point) {
-      dispatch({ type: 'USER_POINT_STATE', point });
-    },
-    userAnswerCheck(answer) {
-      dispatch({ type: 'USER_ANSWER_CHECK', answer });
-    },
-    userPloblemSolved(state) {
-      dispatch({ type: 'USER_PROBLEM_SOLVED', state });
-    },
-    userLevelClear(clear) {
-      dispatch({ type: 'USER_LEVEL_CLEAR', clear });
-    },
-    userHintState(hint) {
-      dispatch({ type: 'USER_HINT_STATE', hint });
-    },
     problemInitialize() {
-      dispatch({ type: 'USER_STATE_INIT' });
-    },
-    saveWrongAnswer(wrong) {
-      dispatch({ type: 'SAVE_WRONG_ANSWER', wrong });
-    },
-    selectAnswerNumber(number) {
-      dispatch({ type: 'SELECT_ANSWER_NUMBER', number });
-    },
-    sendSelectAnswer(data) {
-      if (data.wrongArr) {
-        axios({
-          url: BASE_URL + `/answers`,
-          method: 'post',
-          data: {
-            uid: data.uid,
-            ...data.wrongArr
-          },
-          headers: {
-            'authorization': "Bearer " + data.token
-          }
-        })
-          .then((result) => {
-            alert('Answer add success');
-            ownProps.history.push('/');
-          })
-          .catch((err) => {
-            alert('Answer add failed');
-            console.log(err);
-          });
-      } else {
-        ownProps.history.push('/');
-      }
+      dispatch({ type: USER_STATE_INIT });
     }
   }
 }

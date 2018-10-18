@@ -14,6 +14,9 @@ class ChallengeComponent extends Component {
     window.onpopstate = (e) => {
       this.props.problemInitialize();
     }
+
+    this.sendProblemPoint = this.sendProblemPoint.bind(this);
+    this.sendSelectAnswer = this.sendSelectAnswer.bind(this);
   }
 
   onAnswerSubmit() {
@@ -21,15 +24,15 @@ class ChallengeComponent extends Component {
     if (this.props.problem.userAnswer.join("") === this.props.problem.lyrics) {
       this.props.userPloblemSolved(true);
     } else {
-      this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
-      if (this.props.life === 0) {
+      this.props.userLifeState(this.props.userLife === 0 ? this.props.userLife : this.props.userLife - 1);
+      if (this.props.userLife === 0) {
         this.props.userPloblemSolved(false);
       }
     }
   }
 
   onHintClick() {
-    if (this.props.life !== 0) {
+    if (this.props.userLife !== 0) {
       this.props.userHintState(true);
     }
   }
@@ -39,34 +42,50 @@ class ChallengeComponent extends Component {
   }
 
   onGoHomeClick() {
-    this.props.sendSelectAnswer();
+    this.sendSelectAnswer();
     this.props.userPloblemSolved(null);
   }
 
   onHintOpenOrCancel(ev) {
     if (this.props.isHint) {
-      if (ev.target.classList.contains('character-box') && this.props.life > 0) {
+      if (ev.target.classList.contains('character-box') && this.props.userLife > 0) {
         const nowProblem = this.props.problem
         const userAnswerCopy = nowProblem.userAnswer.slice();
         const target = ev.target.name.split('character')[1];
         userAnswerCopy[target] = nowProblem.lyrics.split("")[target];
         ev.target.value = nowProblem.lyrics.split("")[target];
         this.props.userAnswerCheck(userAnswerCopy);
-        this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
+        this.props.userLifeState(this.props.userLife === 0 ? this.props.userLife : this.props.userLife - 1);
       }
       this.props.userHintState(false);
     }
   }
 
   onMoreListenClick() {
-    if (this.props.life > 0) {
+    if (this.props.userLife > 0) {
       this.setState({
         playing: true,
       }, () => {
-        this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
+        this.props.userLifeState(this.props.userLife === 0 ? this.props.userLife : this.props.userLife - 1);
         this.player.seekTo(this.props.problem.startTime);
       });
     }
+  }
+
+  sendProblemPoint() {
+    this.props.sendProblemPoint({
+      uid: this.props.uid,
+      token: this.props.token,
+      life: this.props.userLife
+    });
+  }
+
+  sendSelectAnswer() {
+    this.props.sendSelectAnswer({
+      uid: this.props.uid,
+      token: this.props.token,
+      wrongArr: this.props.wrongAnswer[this.props.wrongSelectNumber]
+    });
   }
 
   render() {
@@ -85,7 +104,7 @@ class ChallengeComponent extends Component {
         </div>
         <div className="status-bar">
           <div className="life-wrap">
-            <LifeStateComponent life={this.props.life} />
+            <LifeStateComponent life={this.props.userLife} />
           </div>
           <div className="status-button-wrap">
             <button onClick={this.onHintClick.bind(this)} className={this.props.isHint ? 'now-hint' : ''}>Hint</button>
@@ -111,10 +130,22 @@ class ChallengeComponent extends Component {
                 <div className="popup">
                   <strong className="popup-title">Congratulation</strong>
                   <span className="popup-point">Point!!</span>
+                  <ul className="wrong-answer-list">
+                    {
+                      this.props.wrongAnswer.map((item, index) => {
+                        return (
+                          <li key={index}>
+                            <input type="radio" data-index={`${index}`} id={`wrong${index}`} name="wrong" onChange={() => { this.props.selectAnswerNumber(index) }} />
+                            <label htmlFor={`wrong${index}`}>{item.answer}</label>
+                          </li>
+                        );
+                      })
+                    }
+                  </ul>
                   <button onClick={() => {
                     this.onGoHomeClick.bind(this);
+                    this.sendProblemPoint();
                     this.props.userPloblemSolved(null);
-                    this.props.sendProblemPoint();
                   }}>Go Home</button>
                 </div>);
             } else {
@@ -138,7 +169,7 @@ class ChallengeComponent extends Component {
                 <strong className="popup-title">OMG_you failed...</strong>
                 <ul className="wrong-answer-list">
                   {
-                    this.props.wrongAnswers.map((item, index) => {
+                    this.props.wrongAnswer.map((item, index) => {
                       return (
                         <li key={index}>
                           <input type="radio" data-index={`${index}`} id={`wrong${index}`} name="wrong" onChange={() => { this.props.selectAnswerNumber(index) }} />

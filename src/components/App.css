@@ -55,6 +55,17 @@ nav {
   clear: both;
 }
 
+.blind {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  font-size: 0;
+  line-height: 0
+}
+
 .btn-logout {
   float: right;
 }
@@ -274,19 +285,20 @@ nav {
 }
 
 .wrong-answer-list li {
-  color:#fff;
+  color: #fff;
   font-size: 16px;
   margin: 20px 0;
 }
 
-.ranking-list {
+.ranking-list .answer-list {
   margin-top: 60px;
 }
 
-.ranking-list li {
+.ranking-list li,
+.answer-list li {
   display: flex;
   justify-content: space-between;
-  padding:0 5px 5px;
+  padding: 0 5px 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid #5755d9;
 }
@@ -297,4 +309,31 @@ nav {
 
 .ranking-list li .ranking-point {
   flex: 4;
+}
+
+.wrong-answer-wrap {
+  position: relative;
+  min-height:800px;
+  opacity: 0.9;
+}
+
+.wrong-player-wrap {
+  width:100%;
+  height:100%;
+  position: absolute;
+  filter: grayscale();
+  top:0;
+  left:0;
+  font-size:0;
+}
+
+.wrong-player-wrap>div {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.answer-list li {
+  padding: 15px 5px 5px;
+  margin-bottom: 0;
 }

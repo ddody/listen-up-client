@@ -14,6 +14,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons'
 library.add(faHeart);
 
 const history = createBrowserHistory();
+console.log(reducer);
 
 const store = createStore(
   connectRouter(history)(reducer),
