@@ -21,7 +21,7 @@ let BASE_URL;
 if (process.env.NODE_ENV === 'development') {
   BASE_URL = `http://api-dev.listenup.kr`;
 } else {
-  BASE_URL = `https://api.listenup.kr`;
+  BASE_URL = `http://api.listenup.kr`;
 }
 
 const challengeStateToProps = (state) => {
