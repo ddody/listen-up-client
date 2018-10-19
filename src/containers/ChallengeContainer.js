@@ -19,9 +19,9 @@ import {
 const INIT_POINT = 100;
 let BASE_URL;
 if (process.env.NODE_ENV === 'development') {
-  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+  BASE_URL = `http://api-dev.listenup.kr`;
 } else {
-  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+  BASE_URL = `https://api.listenup.kr`;
 }
 
 const challengeStateToProps = (state) => {
