@@ -28,12 +28,24 @@ class AnswerBox extends Component {
   addInputsHandler() {
     for (let x in this.refs) {
       this.refs[x].value = '';
-      this.refs[x].onkeydown = (e) =>
+      this.refs[x].onkeydown = (e) => {
         this._handleKeyPress(e, this.refs[x]);
+      }
     }
   }
 
   _handleKeyPress(e, field) {
+    if (this.props.isLastHint) {
+      setTimeout(() => {
+        this.props.userAnswer.map((item, index) => {
+          if (this.props.character[index] !== item) {
+            this.refs[`character${index}`].classList.add('invalid');
+          } else {
+            this.refs[`character${index}`].classList.remove('invalid');
+          }
+        });
+      }, 100);
+    }
     if (e.keyCode === 32) {
       e.preventDefault();
       let next = this.refs[field.name].nextSibling;
@@ -64,6 +76,9 @@ class AnswerBox extends Component {
       }
       if (!prev) {
         this.refs[field.name].value = '';
+        let inputAnswerCopy = this.props.userAnswer.slice();
+        inputAnswerCopy[field.name.split('character')[1]] = this.refs[field.name].value === '' ? ' ' : this.refs[field.name].value;
+        this.props.userAnswerCheck(inputAnswerCopy);
       }
     }
   }

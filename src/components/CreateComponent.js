@@ -8,12 +8,14 @@ class CreateComponent extends Component {
 
     this.title = React.createRef();
     this.url = React.createRef();
-    this.startTime = React.createRef();
-    this.endTime = React.createRef();
+    this.startTimeMin = React.createRef();
+    this.startTimeSec = React.createRef();
+    this.endTimeMin = React.createRef();
+    this.endTimeSec = React.createRef();
     this.lyricsBox = React.createRef();
 
     this.state = {
-      url: '',
+      url: null,
       startTime: null,
       endTime: null,
       playing: false,
@@ -35,8 +37,8 @@ class CreateComponent extends Component {
   onMovieTestClick(e) {
     const title = this.title.current.value;
     const url = this.url.current.value;
-    const startTime = this.startTime.current.value;
-    const endTime = this.endTime.current.value;
+    const startTime = Number(this.startTimeMin.current.value ? this.startTimeMin.current.value : 0) * 60 + Number(this.startTimeSec.current.value ? this.startTimeSec.current.value : 0);
+    const endTime = Number(this.endTimeMin.current.value ? this.endTimeMin.current.value : 0) * 60 + Number(this.endTimeSec.current.value ? this.endTimeSec.current.value : 0);
     if (url === '' || startTime === '' || endTime === '' || title === '') {
       alert('Please fill in all fields');
     } else {
@@ -83,10 +85,10 @@ class CreateComponent extends Component {
 
   createProblemSubmit() {
     const link = this.url.current.value;
-    const startTime = parseInt(this.startTime.current.value);
-    const endTime = parseInt(this.endTime.current.value);
+    const startTime = Number(this.startTimeMin.current.value ? this.startTimeMin.current.value : 0) * 60 + Number(this.startTimeSec.current.value ? this.startTimeSec.current.value : 0);
+    const endTime = Number(this.endTimeMin.current.value ? this.endTimeMin.current.value : 0) * 60 + Number(this.endTimeSec.current.value ? this.endTimeSec.current.value : 0);
     let lyrics = this.state.lyricsBox.slice();
-    for (let i = lyrics.length - 1; i >= 0 ; i--) {
+    for (let i = lyrics.length - 1; i >= 0; i--) {
       if (lyrics[i] === '' || lyrics[i] === ' ') {
         lyrics.pop();
       } else {
@@ -113,24 +115,35 @@ class CreateComponent extends Component {
     return (
       <div className="create-wrap">
         <h2>영상등록</h2>
-        <p className="create-desc">영상은 이래이래이래해서 이래해야해요</p>
+        <p className="create-desc">문제를 내고 싶은 영상을 등록해 주세요.</p>
         <div className="input-wrap">
           <label htmlFor="movieTitle">제목 : </label>
-          <input type="text" id="movieTitle" name="movieTitle" ref={this.title}/>
+          <input type="text" id="movieTitle" name="movieTitle" ref={this.title} />
         </div>
         <div className="input-wrap">
           <label htmlFor="movieUrl">영상 링크 : </label>
-          <input type="text" id="movieUrl" name="movieUrl" ref={this.url}/>
+          <input type="text" id="movieUrl" name="movieUrl" ref={this.url} />
         </div>
         <div className="input-wrap">
-          <label htmlFor="startTime">구간 시작 : </label>
-          <input type="number" id="startTime" name="startTime" ref={this.startTime}/>
+          <label>구간 시작 : </label>
+          <div className="time-wrap">
+            <input type="number" name="startTimeMin" id="startTimeMin" ref={this.startTimeMin} />
+            <label htmlFor="startTimeMin">분</label>
+            <input type="number" name="startTimeSec" id="startTimeSec" ref={this.startTimeSec} />
+            <label htmlFor="startTimeSec">초</label>
+          </div>
         </div>
         <div className="input-wrap">
-          <label htmlFor="endTime">구간 끝 : </label>
-          <input type="number" id="endTime" name="endTime" ref={this.endTime}/>
+          <label>구간 끝 : </label>
+          <div className="time-wrap">
+            <input type="number" name="endTimeMin" id="endTimeMin" ref={this.endTimeMin} />
+            <label htmlFor="endTimeMin">분</label>
+            <input type="number" name="endTimeSec" id="endTimeSec" ref={this.endTimeSec} />
+            <label htmlFor="endTimeSec">초</label>
+            <button className="btn-test" onClick={this.onMovieTestClick.bind(this)}>테스트</button>
+          </div>
         </div>
-        <button onClick={this.onMovieTestClick.bind(this)}>테스트</button>
+
 
         <div className="create-player">
           <ReactPlayer
@@ -139,22 +152,24 @@ class CreateComponent extends Component {
             playing={this.state.playing}
             width="100%"
             height="100%"
-            controls={true}
-            youtubeConfig={{playerVars: {rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3, showinfo: 0}}}
+            youtubeConfig={{ playerVars: { rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3, showinfo: 0 } }}
           />
         </div>
         <h2>가사 등록</h2>
-        <p>가사를 등록해야해요</p>
+        <p className="create-lyrics-desc">하단 플러스 버튼 으로 가사 등록 칸을 생성하시고 가사를 등록해 주세요</p>
         <div className="create-lyrics">
           <div className="create-lyrics-wrap">
             <CharacterBox changeBoxCharacter={this.changeBoxCharacter.bind(this)} box={this.state.lyricsBox} />
           </div>
-          <button onClick={this.addLyricsBox.bind(this)}>+</button>
-          <button onClick={this.removeLyricsBox.bind(this)}>-</button>
+          <div className="create-lyrics-button-wrap">
+            <button onClick={this.createProblemSubmit.bind(this)} className="btn-submit btn-left">Submit</button>
+            <div className="btn-right">
+              <button onClick={this.addLyricsBox.bind(this)}>+</button>
+              <button onClick={this.removeLyricsBox.bind(this)}>-</button>
+            </div>
+          </div>
         </div>
-        <button onClick={this.createProblemSubmit.bind(this)}>submit</button>
       </div>
-
     );
   }
 }

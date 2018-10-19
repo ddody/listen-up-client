@@ -12,41 +12,29 @@ import {
   USER_HINT_STATE,
   SAVE_WRONG_ANSWER,
   SELECT_ANSWER_NUMBER,
+  ON_LAST_HINT,
+  INCORRENT_ANSWER_ANIMAITION
 } from '../constants/ActionTypes'
 
 const INIT_POINT = 100;
 const BASE_URL = `http://localhost:5000`;
-// const BASE_URL = `http://192.168.0.132:5000`;
 
 const challengeStateToProps = (state) => {
   return {
-    problems: state.problems,
-    problem: state.problem,
-    userLevel: state.userLevel,
-    userLife: state.userLife,
-    userPoint: state.userPoint,
-    isSolved: state.isSolved,
-    isClear: state.isClear,
-    isHint: state.isHint,
-    wrongAnswer: state.wrongAnswer,
-    wrongSelectNumber: state.wrongSelectNumber
+    uid: state.userStateReducer.uid,
+    token: state.userStateReducer.token,
+    problems: state.problemReducer.problems,
+    level: state.problemReducer.level,
+    life: state.problemReducer.life,
+    isSolved: state.problemReducer.isSolved,
+    isClear: state.problemReducer.isClear,
+    isHint: state.problemReducer.isHint,
+    inGameWrongAnswerList: state.problemReducer.inGameWrongAnswerList,
+    inGameWrongAnswerIndex: state.problemReducer.inGameWrongAnswerIndex,
+    isLastHint: state.problemReducer.isLastHint,
+    isIncorrectAnimation: state.problemReducer.isIncorrectAnimation
   }
 }
-
-// const challengeStateToProps = (state) => {
-//   return {
-//     problems: state.problems,
-//     problem: state.problem,
-//     userLevel: state.userLevel,
-//     userLife: state.userLife,
-//     userPoint: state.userPoint,
-//     isSolved: state.isSolved,
-//     isClear: state.isClear,
-//     isHint: state.isHint,
-//     wrongAnswer: state.wrongAnswer,
-//     wrongSelectNumber: state.wrongSelectNumber
-//   }
-// }
 
 const challengeDispatchProps = (dispatch, ownProps) => {
   return {
@@ -110,8 +98,8 @@ const challengeDispatchProps = (dispatch, ownProps) => {
     problemInitialize() {
       dispatch({ type: USER_STATE_INIT });
     },
-    saveWrongAnswer(wrong) {
-      dispatch({ type: SAVE_WRONG_ANSWER, wrong });
+    saveWrongAnswer() {
+      dispatch({ type: SAVE_WRONG_ANSWER });
     },
     selectAnswerNumber(number) {
       dispatch({ type: SELECT_ANSWER_NUMBER, number });
@@ -140,6 +128,15 @@ const challengeDispatchProps = (dispatch, ownProps) => {
       } else {
         ownProps.history.push('/');
       }
+    },
+    onLastHint(hint) {
+      dispatch({ type: ON_LAST_HINT, hint })
+    },
+    incorrectAnswer() {
+      dispatch({ type: INCORRENT_ANSWER_ANIMAITION, value: true });
+      setTimeout(() => {
+        dispatch({ type: INCORRENT_ANSWER_ANIMAITION, value: false });
+      }, 200);
     }
   }
 }

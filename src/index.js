@@ -9,12 +9,12 @@ import reducer from './reducers';
 import logger from 'redux-logger'
 import App from './containers/App';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 
-library.add(faHeart);
+library.add(faHeart, farHeart, faSpinner);
 
 const history = createBrowserHistory();
-console.log(reducer);
 
 const store = createStore(
   connectRouter(history)(reducer),

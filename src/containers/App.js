@@ -14,13 +14,11 @@ const BASE_URL = `http://localhost:5000`;
 // const BASE_URL = `http://192.168.0.132:5000`;
 
 const listenStateToProps = (state) => {
-  console.dir(state);
+  console.log(state);
   return {
     router: state.router,
-    user: {
-      token: state.user.token,
-      uid: state.uid,
-    },
+    token: state.userStateReducer.token,
+    uid: state.userStateReducer.uid
   };
 };
 
@@ -115,7 +113,25 @@ const listenDispatchProps = (dispatch, ownProps) => {
     },
     problemInitialize() {
       dispatch({ type: USER_STATE_INIT });
-    }
+    },
+    createProblemSubmit(data) {
+      axios({
+        url: BASE_URL + `/problems`,
+        method: 'post',
+        data: data,
+        headers: {
+          'authorization': "Bearer " + data.token
+        }
+      })
+        .then(() => {
+          alert('Submit success');
+          ownProps.history.push('/');
+        })
+        .catch((err) => {
+          alert('Problem creation failed');
+          console.log(err);
+        });
+    },
   }
 }
 

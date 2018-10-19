@@ -21,18 +21,20 @@ class ChallengeComponent extends Component {
 
   onAnswerSubmit() {
     this.props.saveWrongAnswer();
-    if (this.props.problem.userAnswer.join("") === this.props.problem.lyrics) {
+    if (this.props.problems[this.props.level - 1].userAnswer.join("") === this.props.problems[this.props.level - 1].lyrics) {
       this.props.userPloblemSolved(true);
     } else {
-      this.props.userLifeState(this.props.userLife === 0 ? this.props.userLife : this.props.userLife - 1);
-      if (this.props.userLife === 0) {
+      this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
+      this.onLastHint();
+      this.props.incorrectAnswer();
+      if (this.props.life === 0) {
         this.props.userPloblemSolved(false);
       }
     }
   }
 
   onHintClick() {
-    if (this.props.userLife !== 0) {
+    if (this.props.life !== 0) {
       this.props.userHintState(true);
     }
   }
@@ -48,26 +50,36 @@ class ChallengeComponent extends Component {
 
   onHintOpenOrCancel(ev) {
     if (this.props.isHint) {
-      if (ev.target.classList.contains('character-box') && this.props.userLife > 0) {
-        const nowProblem = this.props.problem
+      if (ev.target.classList.contains('character-box') && this.props.life > 0) {
+        const nowProblem = this.props.problems[this.props.level - 1]
         const userAnswerCopy = nowProblem.userAnswer.slice();
         const target = ev.target.name.split('character')[1];
         userAnswerCopy[target] = nowProblem.lyrics.split("")[target];
         ev.target.value = nowProblem.lyrics.split("")[target];
         this.props.userAnswerCheck(userAnswerCopy);
-        this.props.userLifeState(this.props.userLife === 0 ? this.props.userLife : this.props.userLife - 1);
+        this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
+        this.onLastHint(); // incorrect
+        this.props.incorrectAnswer();
       }
       this.props.userHintState(false);
     }
   }
 
+  onLastHint() {
+    if (this.props.life === 1) {
+      this.props.onLastHint(true);
+    }
+  }
+
   onMoreListenClick() {
-    if (this.props.userLife > 0) {
+    if (this.props.life > 0) {
+      this.onLastHint(); // incorrect
+      this.props.incorrectAnswer();
       this.setState({
         playing: true,
       }, () => {
-        this.props.userLifeState(this.props.userLife === 0 ? this.props.userLife : this.props.userLife - 1);
-        this.player.seekTo(this.props.problem.startTime);
+        this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
+        this.player.seekTo(this.props.problems[this.props.level - 1].startTime);
       });
     }
   }
@@ -76,7 +88,7 @@ class ChallengeComponent extends Component {
     this.props.sendProblemPoint({
       uid: this.props.uid,
       token: this.props.token,
-      life: this.props.userLife
+      life: this.props.life
     });
   }
 
@@ -84,17 +96,19 @@ class ChallengeComponent extends Component {
     this.props.sendSelectAnswer({
       uid: this.props.uid,
       token: this.props.token,
-      wrongArr: this.props.wrongAnswer[this.props.wrongSelectNumber]
+      wrongArr: this.props.inGameWrongAnswerList[this.props.inGameWrongAnswerIndex]
     });
   }
 
   render() {
     return (
-      <div className="challenge-wrap" onClick={this.onHintOpenOrCancel.bind(this)}>
-        <h2>{this.props.problem.title}</h2>
+      <div
+        className={this.props.isIncorrectAnimation ? "challenge-wrap shaking" : "challenge-wrap"}
+        onClick={this.onHintOpenOrCancel.bind(this)}>
+        <h2>{this.props.problems[this.props.level - 1].title}</h2>
         <div className="create-player">
           <ReactPlayer
-            url={`${this.props.problem.link}?start=${this.props.problem.startTime}&end=${this.props.problem.endTime}`}
+            url={`${this.props.problems[this.props.level - 1].link}?start=${this.props.problems[this.props.level - 1].startTime}&end=${this.props.problems[this.props.level - 1].endTime}`}
             ref={player => { this.player = player }}
             playing={this.state.playing}
             width="100%"
@@ -104,7 +118,7 @@ class ChallengeComponent extends Component {
         </div>
         <div className="status-bar">
           <div className="life-wrap">
-            <LifeStateComponent life={this.props.userLife} />
+            <LifeStateComponent life={this.props.life} />
           </div>
           <div className="status-button-wrap">
             <button onClick={this.onHintClick.bind(this)} className={this.props.isHint ? 'now-hint' : ''}>Hint</button>
@@ -114,25 +128,26 @@ class ChallengeComponent extends Component {
         <div className="create-lyrics">
           <div className={this.props.isHint ? 'create-lyrics-wrap create-lyrics-wrap-hint' : 'create-lyrics-wrap'} >
             <AnswerBox
-              character={this.props.problem.lyrics}
-              userAnswer={this.props.problem.userAnswer}
+              character={this.props.problems[this.props.level - 1].lyrics}
+              userAnswer={this.props.problems[this.props.level - 1].userAnswer}
               userAnswerCheck={this.props.userAnswerCheck}
               isClear={this.props.isClear}
               onProblemLoadInit={this.onProblemLoadInit.bind(this)}
+              isLastHint={this.props.isLastHint}
             />
           </div>
         </div>
         <button className="answer-submit" onClick={this.onAnswerSubmit.bind(this)}>제출</button>
         <Route path="/problem" render={() => {
           if (this.props.isSolved === true) {
-            if (this.props.problemsCount === this.props.level) {
+            if (this.props.problems.length === this.props.level) {
               return (
                 <div className="popup">
                   <strong className="popup-title">Congratulation</strong>
                   <span className="popup-point">Point!!</span>
                   <ul className="wrong-answer-list">
                     {
-                      this.props.wrongAnswer.map((item, index) => {
+                      this.props.inGameWrongAnswerList.map((item, index) => {
                         return (
                           <li key={index}>
                             <input type="radio" data-index={`${index}`} id={`wrong${index}`} name="wrong" onChange={() => { this.props.selectAnswerNumber(index) }} />
@@ -169,7 +184,7 @@ class ChallengeComponent extends Component {
                 <strong className="popup-title">OMG_you failed...</strong>
                 <ul className="wrong-answer-list">
                   {
-                    this.props.wrongAnswer.map((item, index) => {
+                    this.props.inGameWrongAnswerList.map((item, index) => {
                       return (
                         <li key={index}>
                           <input type="radio" data-index={`${index}`} id={`wrong${index}`} name="wrong" onChange={() => { this.props.selectAnswerNumber(index) }} />
