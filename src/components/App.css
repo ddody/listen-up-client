@@ -32,7 +32,7 @@ button {
 }
 
 button:hover {
-  background-color:#100f6d;
+  background-color: #100f6d;
   -webkit-transition: 200ms;
   -moz-transition: 200ms;
   transition: 200ms;
@@ -53,10 +53,15 @@ h2 {
 
 nav {
   background-color: #fff;
-  padding: 10px;
-  height: 55px;
+  padding: 16px;
+  height: 70px;
   position: relative;
   z-index: 999;
+}
+
+nav .logo {
+  float: left;
+  margin-top: -7px;
 }
 
 .clearfix:after {
@@ -130,7 +135,7 @@ nav {
 }
 
 .main .menu li:hover {
-  background-color:#100f6d;
+  background-color: #100f6d;
   -webkit-transition: 400ms;
   -moz-transition: 400ms;
   transition: 400ms;
@@ -160,7 +165,7 @@ nav {
 .wrong-answer-wrap {
   width: calc(100% - 40px);
   max-width: 860px;
-  margin: 30px auto;
+  margin: 40px auto 20px;
   color: #fff;
   background-color: rgba(56, 56, 56, 0.8);
   padding: 30px;

@@ -1,6 +1,6 @@
 import {
   GET_USER_RANKING
-} from '../constants/ActionTypes'
+} from '../constants/ActionTypes';
 
 const initialState = {
   ranking: [],

@@ -8,7 +8,12 @@ import {
   ADD_LIKE_STATE
 } from '../constants/ActionTypes';
 
-const BASE_URL = `http://localhost:5000`;
+let BASE_URL;
+if (process.env.NODE_ENV === 'development') {
+  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+} else {
+  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+}
 
 const wrongStateToProps = (state) => {
   return {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../images/logo.jpg';
 
 class Navbar extends Component {
   render() {
@@ -7,15 +8,17 @@ class Navbar extends Component {
       <nav
         className="clearfix">
           {
-            this.props.isLogin ?
-              <Link to="/">
+            this.props.token ?
+              <Link to="/" className="btn-logout">
                 <button
-                  className="btn-logout"
                   onClick={this.props.onUserLogout}>Logout
                 </button>
               </Link>
               : null
           }
+          <Link to="/" className="logo">
+            <img src={logo} alt="logo"/>
+          </Link>
       </nav>
     )
   }

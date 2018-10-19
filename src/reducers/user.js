@@ -1,7 +1,7 @@
 import {
   ON_USER_LOGIN,
   ON_USER_LOGOUT,
-} from '../constants/ActionTypes'
+} from '../constants/ActionTypes';
 
 const initialState = {
   token: null,

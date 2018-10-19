@@ -39,9 +39,9 @@ class AnswerBox extends Component {
       setTimeout(() => {
         this.props.userAnswer.map((item, index) => {
           if (this.props.character[index] !== item) {
-            this.refs[`character${index}`].classList.add('invalid');
+            return this.refs[`character${index}`].classList.add('invalid');
           } else {
-            this.refs[`character${index}`].classList.remove('invalid');
+            return this.refs[`character${index}`].classList.remove('invalid');
           }
         });
       }, 100);
@@ -55,9 +55,6 @@ class AnswerBox extends Component {
       if (next && next.tagName === "INPUT") {
         next.focus();
       }
-      // if (!next) {
-      //   console.log('제출');
-      // }
     } else if (e.keyCode === 8) {
       e.preventDefault();
       let prev = this.refs[field.name].previousSibling;

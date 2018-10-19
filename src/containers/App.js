@@ -10,11 +10,14 @@ import {
   SELECT_CURRENT_PROBLEM
 } from '../constants/ActionTypes'
 
-const BASE_URL = `http://localhost:5000`;
-// const BASE_URL = `http://192.168.0.132:5000`;
+let BASE_URL;
+if (process.env.NODE_ENV === 'development') {
+  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+} else {
+  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+}
 
 const listenStateToProps = (state) => {
-  console.log(state);
   return {
     router: state.router,
     token: state.userStateReducer.token,
@@ -63,7 +66,6 @@ const listenDispatchProps = (dispatch, ownProps) => {
         .auth()
         .signInWithPopup(provider)
         .then((result) => {
-          console.log(result);
           this.props.onLoginAndImportToken({
             uid: result.user.uid,
             name: result.user.displayName
@@ -106,7 +108,6 @@ const listenDispatchProps = (dispatch, ownProps) => {
           ownProps.history.push('/problem');
         })
         .catch((err) => {
-          // add dispatch error
           alert('Get problem failed');
           console.log(err);
         });

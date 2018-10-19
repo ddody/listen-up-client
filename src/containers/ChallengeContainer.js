@@ -17,7 +17,12 @@ import {
 } from '../constants/ActionTypes'
 
 const INIT_POINT = 100;
-const BASE_URL = `http://localhost:5000`;
+let BASE_URL;
+if (process.env.NODE_ENV === 'development') {
+  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+} else {
+  BASE_URL = `http://listen-up-development.wkdigmhrgd.us-east-2.elasticbeanstalk.com`;
+}
 
 const challengeStateToProps = (state) => {
   return {
@@ -34,7 +39,7 @@ const challengeStateToProps = (state) => {
     isLastHint: state.problemReducer.isLastHint,
     isIncorrectAnimation: state.problemReducer.isIncorrectAnimation
   }
-}
+};
 
 const challengeDispatchProps = (dispatch, ownProps) => {
   return {
@@ -139,6 +144,6 @@ const challengeDispatchProps = (dispatch, ownProps) => {
       }, 200);
     }
   }
-}
+};
 
 export default connect(challengeStateToProps, challengeDispatchProps)(ChallengeComponent);

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import AnswerBox from './AnswerBox';
@@ -51,14 +51,14 @@ class ChallengeComponent extends Component {
   onHintOpenOrCancel(ev) {
     if (this.props.isHint) {
       if (ev.target.classList.contains('character-box') && this.props.life > 0) {
-        const nowProblem = this.props.problems[this.props.level - 1]
+        const nowProblem = this.props.problems[this.props.level - 1];
         const userAnswerCopy = nowProblem.userAnswer.slice();
         const target = ev.target.name.split('character')[1];
         userAnswerCopy[target] = nowProblem.lyrics.split("")[target];
         ev.target.value = nowProblem.lyrics.split("")[target];
         this.props.userAnswerCheck(userAnswerCopy);
         this.props.userLifeState(this.props.life === 0 ? this.props.life : this.props.life - 1);
-        this.onLastHint(); // incorrect
+        this.onLastHint();
         this.props.incorrectAnswer();
       }
       this.props.userHintState(false);
@@ -73,7 +73,7 @@ class ChallengeComponent extends Component {
 
   onMoreListenClick() {
     if (this.props.life > 0) {
-      this.onLastHint(); // incorrect
+      this.onLastHint();
       this.props.incorrectAnswer();
       this.setState({
         playing: true,

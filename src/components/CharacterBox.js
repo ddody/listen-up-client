@@ -22,9 +22,6 @@ class CharacterBox extends Component {
       if (next && next.tagName === "INPUT") {
         next.focus();
       }
-      // if (!next) {
-      //   console.log('제출');
-      // }
     } else if (e.keyCode === 8) {
       e.preventDefault();
       let prev = this.refs[field.name].previousSibling;

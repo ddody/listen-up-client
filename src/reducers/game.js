@@ -13,7 +13,7 @@ import {
   SELECT_ANSWER_NUMBER,
   ON_LAST_HINT,
   INCORRENT_ANSWER_ANIMAITION
-} from '../constants/ActionTypes'
+} from '../constants/ActionTypes';
 
 const initialState = {
   problems: [],

@@ -3,7 +3,7 @@ import {
   WRONG_YOUTUBE_PLAYER_CHANGE,
   LIKE_BUTTON_STATE,
   ADD_LIKE_STATE
-} from '../constants/ActionTypes'
+} from '../constants/ActionTypes';
 
 const initialState = {
   allWrongAnswers: [],

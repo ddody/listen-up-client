@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const LifeStateComponent = (props) => {
@@ -15,6 +15,6 @@ const LifeStateComponent = (props) => {
       />
     </span>)
   );
-}
+};
 
 export default LifeStateComponent;
