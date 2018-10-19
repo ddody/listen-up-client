@@ -5,9 +5,9 @@ import { GET_USER_RANKING } from '../constants/ActionTypes'
 
 let BASE_URL;
 if (process.env.REACT_APP_NODE_ENV === 'development') {
-  BASE_URL = `http://api-dev.listenup.kr`;
+  BASE_URL = `https://api-dev.listenup.kr`;
 } else if (process.env.NODE_ENV === 'production') {
-  BASE_URL = `http://api.listenup.kr`;
+  BASE_URL = `https://api.listenup.kr`;
 }
 
 const rankingStateToProps = (state) => {
