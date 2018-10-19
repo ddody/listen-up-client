@@ -18,9 +18,9 @@ import {
 
 const INIT_POINT = 100;
 let BASE_URL;
-if (process.env.NODE_ENV === 'development') {
+if (process.env.REACT_APP_NODE_ENV === 'development') {
   BASE_URL = `http://api-dev.listenup.kr`;
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   BASE_URL = `http://api.listenup.kr`;
 }
 
