@@ -53,7 +53,7 @@ class App extends Component {
                   height="100%"
                   volume={0.3}
                   playing
-                  youtubeConfig={{ playerVars: { rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3 } }}
+                  youtubeConfig={{ playerVars: { rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3, cc_load_policy: 3 } }}
                   onEnded={() => {
                     this.player.seekTo(0);
                   }}

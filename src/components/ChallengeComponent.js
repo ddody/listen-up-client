@@ -113,7 +113,7 @@ class ChallengeComponent extends Component {
             playing={this.state.playing}
             width="100%"
             height="100%"
-            youtubeConfig={{ playerVars: { rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3, showinfo: 0 } }}
+            youtubeConfig={{ playerVars: { rel: 0, fs: 1, modestbranding: 1, iv_load_policy: 3, showinfo: 0, cc_load_policy: 3 } }}
           />
         </div>
         <div className="status-bar">
