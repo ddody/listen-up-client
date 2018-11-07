@@ -2,16 +2,19 @@
 
 # Introduction
 
-**Listen Up**은 'tvN 놀라운 토요일(https://namu.wiki/w/%EB%86%80%EB%9D%BC%EC%9A%B4%20%ED%86%A0%EC%9A%94%EC%9D%BC), 쟁반 노래방' 등의 포멧을 이용한 노래가사 맞추기 어플리케이션 입니다.
+**Listen Up**은 '[tvN 놀라운 토요일](https://namu.wiki/w/%EB%86%80%EB%9D%BC%EC%9A%B4%20%ED%86%A0%EC%9A%94%EC%9D%BC), 쟁반 노래방' 등의 포멧을 이용한 노래가사 맞추기 어플리케이션 입니다.
 
-![ScreenShot](https://raw.githubusercontent.com/uphere2017/uphere-web/dev/uphere_img2.png)
+![ScreenShot](./listenup-thumbnail.gif)
 
 ## Requirements
 
+- Listen Up은 Chrome Browser를 권장합니다.
 - Listen Up은 Firebase Social Login을 사용합니다.
-- Chrome Browser를 권장합니다.
+
+## Installation
 
 ### Client
+
 ```
 git clone https://github.com/ddody/listen-up-client.git
 cd listen-up-client
@@ -20,6 +23,7 @@ npm start
 ```
 
 ### Server
+
 ```
 git clone https://github.com/ddody/listen-up-server.git
 cd listen-up-server
@@ -65,7 +69,12 @@ npm start
 ## Version Control
 
 - Web, Server의 독립적인 관리를 위한 GIT Repo 구분
-- Branch, Pull Request 기반 개발 진행
+
+## Challenges
+
+- Youtube player API를 선택하고 사용하기가 쉽지 않았습니다. 프로젝트와의 궁합과 예상치 못한 충돌 등이 있었지만 다행히 잘 해결 하였습니다. 하지만 더 유연한 서비스를 위해 필요기능은 youtube API를 이용하여 직접 구현 하려 합니다.
+- AWS 관련한 부분은 이해가 쉽지 않았습니다. 인증서 설정, 서버 배포 등 깊은 학습이 필요할 것 같습니다.
+- Database Schema 구성, server API 작성등 server쪽 전반에 대한 부분도 이해가 쉽지 않았습니다. 더 깊은 학습 후 다시 한번 검토를 해 봐야 할 것 같습니다.
 
 ## Things to do
 
@@ -82,4 +91,6 @@ npm start
 - 문제 수정 기능
 - 그 밖에 디자인 수정 및 기능 추가
 
+
+---
 Special thanks to [Ken Huh](https://github.com/Ken123777)
