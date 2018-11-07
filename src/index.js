@@ -8,9 +8,9 @@ import { createBrowserHistory } from 'history'
 import reducer from './reducers';
 import logger from 'redux-logger'
 import App from './containers/App';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHeart, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faHeart, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
 
 library.add(faHeart, farHeart, faSpinner);
 
