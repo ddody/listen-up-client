@@ -8,14 +8,8 @@ import {
   GET_GAME_PROBLEMS,
   USER_STATE_INIT,
   SELECT_CURRENT_PROBLEM
-} from '../constants/ActionTypes'
-
-let BASE_URL;
-if (process.env.NODE_ENV === 'development') {
-  BASE_URL = `https://api-dev.listenup.kr`;
-} else if (process.env.NODE_ENV === 'production') {
-  BASE_URL = `https://api.listenup.kr`;
-}
+} from '../constants/ActionTypes';
+import BASE_URL from '../url/base-url';
 
 const listenStateToProps = (state) => {
   return {

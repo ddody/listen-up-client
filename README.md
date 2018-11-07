@@ -2,7 +2,7 @@
 
 # Introduction
 
-**Listen Up**은 '[tvN 놀라운 토요일](https://namu.wiki/w/%EB%86%80%EB%9D%BC%EC%9A%B4%20%ED%86%A0%EC%9A%94%EC%9D%BC), 쟁반 노래방' 등의 포멧을 이용한 노래가사 맞추기 어플리케이션 입니다.
+**Listen Up**은 '[tvN 놀라운 토요일](https://namu.wiki/w/%EB%86%80%EB%9D%BC%EC%9A%B4%20%ED%86%A0%EC%9A%94%EC%9D%BC), 쟁반 노래방' 등의 형식을 차용한 노래가사 맞추기 어플리케이션 입니다.
 
 ![ScreenShot](./listenup-thumbnail.gif)
 

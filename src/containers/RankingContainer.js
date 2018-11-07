@@ -1,14 +1,8 @@
 import { connect } from 'react-redux';
 import axios from 'axios';
 import RankingComponent from '../components/RankingComponent';
-import { GET_USER_RANKING } from '../constants/ActionTypes'
-
-let BASE_URL;
-if (process.env.NODE_ENV === 'development') {
-  BASE_URL = `https://api-dev.listenup.kr`;
-} else if (process.env.NODE_ENV === 'production') {
-  BASE_URL = `https://api.listenup.kr`;
-}
+import { GET_USER_RANKING } from '../constants/ActionTypes';
+import BASE_URL from '../url/base-url';
 
 const rankingStateToProps = (state) => {
   return {

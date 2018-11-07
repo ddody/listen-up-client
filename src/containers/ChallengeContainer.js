@@ -14,17 +14,10 @@ import {
   SELECT_ANSWER_NUMBER,
   ON_LAST_HINT,
   INCORRENT_ANSWER_ANIMAITION
-} from '../constants/ActionTypes'
+} from '../constants/ActionTypes';
+import BASE_URL from '../url/base-url';
 
 const INIT_POINT = 100;
-let BASE_URL;
-if (process.env.NODE_ENV === 'development') {
-  BASE_URL = `https://api-dev.listenup.kr`;
-} else if (process.env.NODE_ENV === 'production') {
-  BASE_URL = `https://api.listenup.kr`;
-} else if (process.env.NODE_ENV === 'local') {
-  BASE_URL = `http://localhost:8081`;
-}
 
 const challengeStateToProps = (state) => {
   return {
