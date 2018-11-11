@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import { connectRouter, routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { createBrowserHistory } from 'history'
 import reducer from './reducers';
-import logger from 'redux-logger'
 import App from './containers/App';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faHeart, faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -20,8 +19,7 @@ const store = createStore(
   connectRouter(history)(reducer),
   compose(
     applyMiddleware(
-      routerMiddleware(history),
-      logger
+      routerMiddleware(history)
     )
   )
 );
