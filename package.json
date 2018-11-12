@@ -22,7 +22,6 @@
     "redux-logger": "^3.0.6"
   },
   "scripts": {
-    "dev": "SET NODE_ENV=local && react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
