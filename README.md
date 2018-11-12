@@ -12,6 +12,7 @@
 
 - Listen Up은 Chrome Browser를 권장합니다.
 - Listen Up은 Firebase Social Login을 사용합니다.
+- Listen Up은 현재 모바일은 지원하지 않습니다.
 
 ## Installation
 
