@@ -6,6 +6,8 @@
 
 ![ScreenShot](./listenup-thumbnail.gif)
 
+[Youtube Link](https://youtu.be/qHC8RNBVnEI)
+
 ## Requirements
 
 - Listen Up은 Chrome Browser를 권장합니다.
